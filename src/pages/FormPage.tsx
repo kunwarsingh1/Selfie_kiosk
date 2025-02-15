@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import Logo from '../components/Logo';
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import Logo from "../components/Logo";
+import axios from "axios";
 
 interface FormData {
   name: string;
@@ -14,7 +15,7 @@ const FormPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm<FormData>();
 
   useEffect(() => {
@@ -23,33 +24,39 @@ const FormPage = () => {
     const resetTimer = () => {
       if (inactivityTimer) clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(() => {
-        navigate('/');
+        navigate("/");
       }, 60000); // 1 minute
     };
 
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    const events = [
+      "mousedown",
+      "mousemove",
+      "keypress",
+      "scroll",
+      "touchstart",
+    ];
 
     // Start the timer
     resetTimer();
 
     // Add event listeners
-    events.forEach(event => {
+    events.forEach((event) => {
       document.addEventListener(event, resetTimer);
     });
 
     // Cleanup
     return () => {
       if (inactivityTimer) clearTimeout(inactivityTimer);
-      events.forEach(event => {
+      events.forEach((event) => {
         document.removeEventListener(event, resetTimer);
       });
     };
   }, [navigate]);
 
   const onSubmit = (data: FormData) => {
-    localStorage.setItem('userInfo', JSON.stringify(data));
-    const response = axios.post('http://udaanapi.zetrance.com/save',data)
-    navigate('/photo');
+    localStorage.setItem("userInfo", JSON.stringify(data));
+    const response = axios.post("http://udaanapi.zetrance.com/save", data);
+    navigate("/photo");
   };
 
   return (
@@ -66,49 +73,64 @@ const FormPage = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <input
-              {...register('name', { required: 'Name is required' })}
+              {...register("name", { required: "Name is required" })}
               placeholder="Full Name"
               className="w-full px-6 py-4 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white text-2xl"
             />
-            {errors.name && <p className="mt-1 text-red-300 text-lg">{errors.name.message}</p>}
+            {errors.name && (
+              <p className="mt-1 text-red-300 text-lg">{errors.name.message}</p>
+            )}
           </div>
 
           <div>
             <input
-              {...register('phone', {
-                required: 'Phone number is required',
+              {...register("phone", {
+                required: "Phone number is required",
                 validate: {
                   validLength: (value) => {
                     // Remove all non-digit characters
-                    const digitsOnly = value.replace(/\D/g, '');
-                    return digitsOnly.length === 10 || 'Phone number must be 10 digits';
+                    const digitsOnly = value.replace(/\D/g, "");
+                    return (
+                      digitsOnly.length === 10 ||
+                      "Phone number must be 10 digits"
+                    );
                   },
                   validFormat: (value) => {
                     // Check if it matches a valid phone format after cleaning
-                    const cleaned = value.replace(/\D/g, '');
-                    return /^\d{10}$/.test(cleaned) || 'Invalid phone number format';
-                  }
-                }
+                    const cleaned = value.replace(/\D/g, "");
+                    return (
+                      /^\d{10}$/.test(cleaned) || "Invalid phone number format"
+                    );
+                  },
+                },
               })}
               placeholder="Phone Number"
               className="w-full px-6 py-4 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white text-2xl"
             />
-            {errors.phone && <p className="mt-1 text-red-300 text-lg">{errors.phone.message}</p>}
+            {errors.phone && (
+              <p className="mt-1 text-red-300 text-lg">
+                {errors.phone.message}
+              </p>
+            )}
           </div>
 
           <div>
             <input
-              {...register('email', {
-                required: 'Email is required',
+              {...register("email", {
+                required: "Email is required",
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Invalid email address'
-                }
+                  message: "Invalid email address",
+                },
               })}
               placeholder="Email Address"
               className="w-full px-6 py-4 rounded-lg bg-white bg-opacity-20 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-white text-2xl"
             />
-            {errors.email && <p className="mt-1 text-red-300 text-lg">{errors.email.message}</p>}
+            {errors.email && (
+              <p className="mt-1 text-red-300 text-lg">
+                {errors.email.message}
+              </p>
+            )}
           </div>
 
           <button
