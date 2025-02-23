@@ -55,7 +55,7 @@ const FormPage = () => {
 
   const onSubmit = (data: FormData) => {
     localStorage.setItem("userInfo", JSON.stringify(data));
-    const response = axios.post("http://udaanapi.zetrance.com/save", data);
+    const response = axios.post("https://udaanapi.zetrance.com/save", data);
     navigate("/photo");
   };
 
