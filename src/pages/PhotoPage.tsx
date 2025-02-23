@@ -98,7 +98,7 @@ const PhotoPage = () => {
   const email = async (img: string | null, send_to: string) => {
     const body = { data: img, send_to: send_to };
     try {
-      const response = await axios.post(`http://udaanapi.zetrance.com/email`, body);
+      const response = await axios.post(`https://udaanapi.zetrance.com/email`, body);
       return response.status === 200;
     } catch (error) {
       console.error('Error sending email:', error);
